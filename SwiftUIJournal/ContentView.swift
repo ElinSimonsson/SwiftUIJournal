@@ -8,19 +8,48 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+   @StateObject var journal = Journal()
+    
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView{
+            
+            List(journal.entries) { entry in
+                NavigationLink(destination: JournalEntryView(journal: journal, entry: entry)) {
+                RowView(entry: entry)
+                }
+            }
+            .navigationTitle("Journal")
+            .navigationBarItems(trailing: NavigationLink(destination: JournalEntryView(journal: journal)){
+                Image(systemName: "plus")
+                
+            })
         }
-        .padding()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct RowView: View {
+    var entry: JournalEntry
+    
+    var date: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        
+        return dateFormatter.string(from: entry.date)
+    }
+    
+    var body: some View {
+        HStack {
+            Text("\(date)")
+            Spacer()
+            Text(entry.content.prefix(7)+"...")
+            
+        }
     }
 }
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}
